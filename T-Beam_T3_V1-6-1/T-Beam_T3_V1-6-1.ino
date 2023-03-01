@@ -1,4 +1,4 @@
-//01-03-23 V1.1.0
+//01-03-23 V2.0.1
 
 //Every min gets temperature and humidity. After 15min or when button is pressed
 //send the avarage of the colected data. 
