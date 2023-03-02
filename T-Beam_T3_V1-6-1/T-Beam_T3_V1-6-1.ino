@@ -1,4 +1,4 @@
-//01-03-23 V2.0.1
+//02-03-23 V2.0.2
 
 //Every min gets temperature and humidity. After 15min or when button is pressed
 //send the avarage of the colected data. 
@@ -27,7 +27,7 @@ Adafruit_SSD1306 oled(128, 32, &Wire, -1);
 uint8_t     NWKSKEY[16], APPSKEY[16], KEY[16], PAYLOAD[6], count_temp[3], count_hum[3];    
 uint32_t    DEVADDR;
 bool      timer_event = false, timer_event1 = false, ext_event = false;
-float     temp[3], hum[3], crnt_temp[3], crnt_hum[3], prom_temp, prom_hum;     //Temperature, humidity. One element per DHT
+float     temp[3], hum[3], crnt_temp[3], crnt_hum[3];     //Temperature, humidity. One element per DHT
 const uint8_t led = 25;
 
 static const unsigned char PROGMEM image_data_Cenicana[] = {
@@ -202,18 +202,16 @@ void read_dht(){
         // Get temperature event
         crnt_temp[i] = dht[i].readTemperature();
         
-        temp[i] = temp[i] + crnt_temp[i];
-
         if (!isnan(crnt_temp[i])) {
+          temp[i] += crnt_temp[i];
           count_temp[i]++;
         }
     
         // Get humidity event
         crnt_hum[i] = dht[i].readHumidity();
         
-        hum[i] = hum[i] + crnt_hum[i];
-
         if (!isnan(crnt_hum[i])) {
+          hum[i] += crnt_hum[i];
           count_hum[i]++;
         }
    }
@@ -266,9 +264,7 @@ void display_data(){
         delay(2500);
   }
 
-  oled.clearDisplay();            
-  oled.setTextSize(1);            
-  oled.setTextColor(WHITE);       
+  oled.clearDisplay();                
 
   oled.drawBitmap(0, 0, image_data_Cenicana, 128, 32, SSD1306_WHITE);
   oled.display();
@@ -321,12 +317,7 @@ void display_media(){
         delay(2500);
   }
 
-  oled.clearDisplay();            
-  oled.setTextSize(1);            
-  oled.setTextColor(WHITE);       
-
-  prom_temp = (temp[1]+temp[2]+temp[3])/3;
-  prom_hum  = (hum[1]+hum[2]+hum[3])/3;
+  oled.clearDisplay();                
 
   oled.setCursor(10, 0);           
   oled.println("Prom 15 min");        
@@ -335,15 +326,17 @@ void display_media(){
   oled.setCursor(0, 8);
   oled.println("General");
           
-  Serial.print(F(" - T°C Prom: ")); Serial.print(prom_temp);
+  Serial.print(F(" - T°C Prom: ")); Serial.print((temp[0]+temp[1]+temp[2])/3);
   oled.setCursor(0, 16);
   oled.println("T.C Prom:");
   oled.setCursor(50, 16);
-  oled.println(prom_temp);
+  oled.println((temp[0]+temp[1]+temp[2])/3);
 
-  Serial.print(F(" HR Prom: ")); Serial.println(prom_hum);
+  Serial.print(F(" HR Prom: ")); Serial.println((hum[0]+hum[1]+hum[2])/3);
   oled.setCursor(0, 24);
   oled.println("HR Prom:");
   oled.setCursor(50, 24);
-  oled.println(prom_hum);
+  oled.println((hum[0]+hum[1]+hum[2])/3);
+
+  oled.display();
 }
