@@ -63,6 +63,9 @@ void onEvent (ev_t ev) {
       if (LMIC.txrxFlags & TXRX_ACK) {
         flag_ack = true;
       }
+      else{
+        flag_nack =true;
+      }
 
       if (LMIC.dataLen) {
         lenght = LMIC.dataLen;
