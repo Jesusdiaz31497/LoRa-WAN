@@ -38,3 +38,18 @@ void AX192_init() {
   axp.setPowerOutPut(AXP192_LDO3,  AXP202_OFF);             // GPS
   axp.setPowerOutPut(AXP192_EXTEN, AXP202_OFF);             // Unused
 }
+
+void AX192_off() {
+  axp.adc1Enable(AXP202_BATT_VOL_ADC1, false);               // Turn on ADCs.
+  axp.adc1Enable(AXP202_BATT_CUR_ADC1, false);
+  axp.adc1Enable(AXP202_VBUS_VOL_ADC1, false);
+  axp.adc1Enable(AXP202_VBUS_CUR_ADC1, false);
+
+  axp.setPowerOutPut(AXP192_DCDC1, AXP202_OFF);              // Serial
+  axp.setPowerOutPut(AXP192_LDO2,  AXP202_OFF);              // LoRa
+  axp.setChgLEDMode(AXP20X_LED_OFF);
+  AXP202_OFF;
+  Wire.endTransmission();
+  Wire.end();
+  SPI.end();
+}

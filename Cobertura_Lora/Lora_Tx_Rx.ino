@@ -3,24 +3,12 @@
 
 void do_send(osjob_t* j) {
 
-  for (uint8_t x = 0; x < 5; x++) {
-    digitalWrite(Led, LOW);
-    delay(25);
-    digitalWrite(Led, HIGH);
-    delay(25);
-  }
-
-  tx_payload[0]  = 'H';
-  tx_payload[1]  = 'O';
-  tx_payload[2]  = 'L';
-  tx_payload[3]  = 'A';
-
+  tx_payload[0] = axp.getBattVoltage() / 20;
 
   if (LMIC.opmode & OP_TXRXPEND) {
     Serial.println(F("OP_TXRXPEND, not sending"));
   } else {
-    LMIC_setTxData2(1, tx_payload, 4, 1);
-    //LMIC_setTxData2(1, tx_payload, 8, 0);
+    LMIC_setTxData2(1, tx_payload, 1, 1);
   }
 
 }
@@ -60,21 +48,10 @@ void onEvent (ev_t ev) {
       Serial.println(F("EV_REJOIN_FAILED"));
       break;
     case EV_TXCOMPLETE:
+      Serial.println(F("EV_TXCOMPLETE_ACK"));
       if (LMIC.txrxFlags & TXRX_ACK) {
         flag_ack = true;
       }
-      else{
-        flag_nack =true;
-      }
-
-      if (LMIC.dataLen) {
-        lenght = LMIC.dataLen;
-        for (int i = 0; i < LMIC.dataLen; i++) {
-          prueba[i] = LMIC.frame[LMIC.dataBeg + i];
-        }
-        flag_rx = true;
-      }
-
       break;
     case EV_LOST_TSYNC:
       Serial.println(F("EV_LOST_TSYNC"));

@@ -2,23 +2,22 @@
 
 void Init_Lora() {
 
-  str_key("E2159DD5DCA40FE8ACFB74EB636BBE16");         // LEER PARAMETROS LORAWAN
-  memcpy_P(NWKSKEY, KEY, 16);
-  str_key("F91D0505D511210D280B2E9ABE0DF080");
-  memcpy_P(APPSKEY, KEY, 16);
-  str_DEVADDR("30853C18");
-
   SPI.begin(5, 19, 27, 18);
+
+  str_key("2C311FFD1D18B6A6B6A79992E25AE5C5");         // LEER PARAMETROS LORAWAN
+  memcpy_P(NWKSKEY, KEY, 16);
+  str_key("3AE2185BF155202B2763879E6A610A41");
+  memcpy_P(APPSKEY, KEY, 16);
+  str_DEVADDR("30F81FE1");
+
   os_init();
   LMIC_reset();
-
+  LMIC_setSession (0x1, DEVADDR, NWKSKEY, APPSKEY);
   LMIC_setAdrMode(0);                                               // Enable or disable data rate adaptation
   LMIC_selectSubBand(1);                                            // AU915
   LMIC_setLinkCheckMode(0);                                         // Disable link check validation
   LMIC.dn2Dr = DR_SF9;                                              // TTN uses SF9 for its RX2 window.
   LMIC_setDrTxpow(DR_SF12, 14);
-  LMIC_clrTxData ();
-  LMIC_setSession (0x1, DEVADDR, NWKSKEY, APPSKEY);
 }
 
 
